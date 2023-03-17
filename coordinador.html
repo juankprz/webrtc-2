@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Screen Sharing con PeerJS</title>
+    <style>
+      #local-video, #remote-video {
+        width: 100%;
+        height: auto;
+        max-width: 500px;
+        margin: 20px auto;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Screen Sharing con PeerJS</h1>
+    <video id="local-video" muted autoplay></video>
+    <video id="remote-video" autoplay></video>
+    
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const socket = io('http://localhost:3000');
+        socket.emit('nuevo_usuario_coordinador', 'otro usuario');
+        
+      var peer = new Peer(socket.id); 
+      peer.on('open',()=>{
+        console.log('conecto a server')
+       var conn =peer.connect('mLzGtNF7m4qHRpwmAADB')
+       console.log(conn)
+        conn.on('open',()=>{
+          console.log("Conexion establecida")
+        });
+      })
+    
+    
+      
+    </script>
+  </body>
+</html>

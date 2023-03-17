@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body onload="myFunction()">
+    <video id="mi-video"  muted autoplay></video>
+    
+</body>
+<script>
+function usuarios_conectados() {
+
+    var config = {
+  method: 'get',
+  url: 'http://127.0.0.1:3000/usuarios',
+  headers: { }
+};
+
+axios(config)
+.then(function (response) {
+    console.log(Object.keys(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+
+
+}
+
+/*
+function compartirpantalla(socket) {
+    navigator.mediaDevices.getDisplayMedia({ video: true }).then(function(stream) {
+        console.log('Se capturó la pantalla');
+         var localVideo = document.getElementById('mi-video');
+        localVideo.srcObject = stream;
+        var peer = new Peer(socket.id); //
+        
+        console.log("peer id"+peer.id)        
+        
+         
+      });
+}
+*/
+let  streamCompartido =null;
+function compartirpantalla(socket) {
+  return new Promise(function(resolve, reject) {
+    navigator.mediaDevices.getDisplayMedia({ video: true })
+    .then(function(stream) {
+      console.log('Se capturó la pantalla');
+      var localVideo = document.getElementById('mi-video');
+      localVideo.srcObject = stream;        
+      streamCompartido = stream; // asignar el stream a la variable global
+      resolve(); // resolver la promesa
+    })
+    .catch(function(error) {
+      console.error('Error al capturar la pantalla', error);
+      reject(error); // rechazar la promesa
+    });
+  });
+}
+
+function myFunction() {
+   const socket = io('http://localhost:3000');
+  
+ socket.emit('nuevo_usuario_agente', 'juan');
+ compartirpantalla(socket)
+  .then(function(stream) {
+    var ejecute=0;
+    let  peer;
+    socket.on('usuarios_coordinadores', function(data) {
+      debugger;
+      
+       peer = new Peer(socket.id); 
+      debugger;
+      peer.on('open',()=>{
+        console.log('conecto a server')
+      var conn =peer.connect(data)
+      var call = peer.call(data,stream);
+      console.log(call)
+        debugger;
+        conn.on('error', function(err) { console.log("este es error"+error) });
+      })
+    });
+  })
+  .catch(function(error) {
+    // La función compartirpantalla ha fallado
+    console.error('Error al capturar la pantalla', error);
+  });
+ //usuarios_conectados();
+}
+
+ 
+
+</script>
+</html>
