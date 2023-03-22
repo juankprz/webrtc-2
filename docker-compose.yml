@@ -1,0 +1,8 @@
+version: "3"
+services:
+  meet_webrtc:
+    build: .
+    ports:
+      - "3600:3000"
+   
+  

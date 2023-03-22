@@ -28,10 +28,20 @@
        const urlParams = new URLSearchParams(queryString);
        const conexion = urlParams.get('conexion');
        const usuario = urlParams.get('usuario');
+     
        socket.emit('nuevo_usuario_coordinador', usuario);
-       axios.get('http://localhost:3000/id_agente/'+us)
-            .then((response) => {
-              console.log(response);
+       axios.get('/id_agentes/'+conexion)
+            .then((response,peer) => {
+              var peer = new Peer(socket.id); 
+              peer.on('open',()=>{
+        console.log('conecto a server')
+       var conn =peer.connect(response.data)
+       console.log(conn)
+        conn.on('open',()=>{
+          console.log("Conexion establecida")
+        });
+      })
+    
             })
             .catch((error) => {
               console.log(error);
@@ -40,16 +50,8 @@
        
        
         
-      var peer = new Peer(socket.id); 
-      peer.on('open',()=>{
-        console.log('conecto a server')
-       var conn =peer.connect('pbXlGs5Ok9HhtDgEAAAf')
-       console.log(conn)
-        conn.on('open',()=>{
-          console.log("Conexion establecida")
-        });
-      })
-    
+   
+     
     
       
     </script>
