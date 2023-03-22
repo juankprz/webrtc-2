@@ -4,34 +4,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Screen Agente</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body onload="myFunction()">
+  <h1>Pagina Agente</h1>
     <video id="mi-video"  muted autoplay></video>
     
 </body>
 <script>
-function usuarios_conectados() {
 
-    var config = {
-  method: 'get',
-  url: 'http://127.0.0.1:3000/usuarios',
-  headers: { }
-};
-
-axios(config)
-.then(function (response) {
-    console.log(Object.keys(response.data));
-})
-.catch(function (error) {
-  console.log(error);
-});
-
-
-}
 
 /*
 function compartirpantalla(socket) {
@@ -66,9 +50,11 @@ function compartirpantalla(socket) {
 }
 
 function myFunction() {
-   const socket = io('http://localhost:3000');
-  
- socket.emit('nuevo_usuario_agente', 'juan');
+   const socket = io();
+   const queryString = window.location.search;
+   const urlParams = new URLSearchParams(queryString);
+   const nombre= urlParams.get('nombre');
+ socket.emit('nuevo_usuario_agente', nombre);
  compartirpantalla(socket)
   .then(function(stream) {
     var ejecute=0;
@@ -80,11 +66,11 @@ function myFunction() {
       debugger;
       peer.on('open',()=>{
         console.log('conecto a server')
-      var conn =peer.connect(data)
-      var call = peer.call(data,stream);
-      console.log(call)
-        debugger;
-        conn.on('error', function(err) { console.log("este es error"+error) });
+        setTimeout(() => {
+          var conn =peer.connect(data)
+          var call = peer.call(data,stream);
+          console.log(call)
+        }, 3000);
       })
     });
   })

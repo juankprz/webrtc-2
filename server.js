@@ -18,9 +18,23 @@ app.get('/agentes', (req, res) => {
 app.get('/coordinadores', (req, res) => {
   res.send(usuariosCoordinadores);
 });
+app.get('/id_coordinadores/:id', (req, res) => {
+ let dato= Object.keys(usuariosCoordinadores).find(key => usuariosCoordinadores[key] === req.params.id)
+  res.send(dato);
+});
+app.get('/id_agentes/:id', (req, res) => {
+  let dato= Object.keys(usuariosAgentes).find(key => usuariosAgentes[key] === req.params.id)
+   res.send(dato);
+ });
+app.get('/vista_agente', function(req, res) {
+  res.sendFile('agente.html', {root: __dirname })
+});
+app.get('/vista_coordinador', function(req, res) {
+  res.sendFile('coordinador.html', {root: __dirname })
+});
 io.on('connection', (socket) => {
     let id=socket.id;
-  console.log('Usuario conectado con id'+socket.id );
+  console.log('Usuario conectado con id'+' '+socket.id );
   
   
   socket.on('nuevo_usuario_coordinador', (data) => {
@@ -32,7 +46,7 @@ io.on('connection', (socket) => {
     io.emit('usuarios_agentes', id);
   });
   socket.on('disconnect', () => {
-    console.log('Usuario desconectado'+id );
+    console.log('Usuario desconectado'+' '+id );
     if (usuariosCoordinadores.hasOwnProperty(id)) {
       delete usuariosCoordinadores[id];
     } else {
